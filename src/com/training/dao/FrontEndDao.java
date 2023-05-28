@@ -31,7 +31,7 @@ public class FrontEndDao {
 		int startRowNo = endRowNo-(itemNum-1);
 		String querySQL = "SELECT * FROM("
 				+ "SELECT ROWNUM as RN, BG.* "
-				+ "FROM BEVERAGE_GOODS BG WHERE LOWER(GOODS_NAME) LIKE LOWER(?)) ";
+				+ "FROM BEVERAGE_GOODS BG WHERE LOWER(GOODS_NAME) LIKE LOWER(?) AND STATUS=1) ";
 //				+ "WHERE RN>= ? AND RN<= ? ORDER BY GOODS_ID";
 		// Step1:取得Connection
 		try (Connection conn = DBConnectionFactory.getLocalDBConnection();
