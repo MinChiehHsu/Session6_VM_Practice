@@ -45,7 +45,7 @@ public class BackendAction extends DispatchAction{
 		Set<Goods> goodsList = BackendService.getInstance().queryGoods();
 		request.setAttribute("goodsList", goodsList);
 		String goodsID = request.getParameter("goodsID");
-		goodsID = (goodsID != null) ? goodsID : (String)request.getSession().getAttribute("modifyGoodID");
+		goodsID = (goodsID != null) ? goodsID : String.valueOf(request.getSession().getAttribute("modifyGoodID"));
 		if(goodsID != null){
 			Goods selectedGood = BackendService.getInstance().queryGoodById(goodsID);
 			request.setAttribute("selectedGood", selectedGood);
