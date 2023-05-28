@@ -25,6 +25,7 @@ public class FrontendAction extends DispatchAction{
 
 		String searchKeyword = pageList.getSearchKeyword();
 		searchKeyword = searchKeyword==null? searchKeyword="" : pageList.getSearchKeyword();
+		request.setAttribute("searchKeyword", searchKeyword);
 		if(pageList.getPageNo()==null){
 			pageList.setPageNo("1");
 		} else pageList.setPageNo(pageList.getPageNo());

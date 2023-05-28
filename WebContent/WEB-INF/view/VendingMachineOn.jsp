@@ -32,10 +32,14 @@
 		<tr>
 			<form action="FrontendAction.do" method="post">
 				<input type="hidden" name="customerID" value="${member.idNo}" />
-				<td width="400" height="200" align="center"><img border="0"
+				
+				<td width="400" height="200" align="center">
+				<p><a href="http://localhost:8085/JavaEE_Session6_Homework/FrontendAction.do?action=searchGoods&pageNo=1&searchKeyword="/>點此回首頁</br></a></p>
+				<img border="0"
 					src="DrinksImage/coffee.jpg" width="200" height="200">
-					<h1>歡迎光臨， ${sessionScope.member.cusName}</h1> <a
-					href="BackendAction.do?action=queryGoods&page=1" align="left">後臺頁面</a>&nbsp;
+					
+					<h1>歡迎光臨， ${sessionScope.member.cusName}</h1> 
+					<a href="BackendAction.do?action=queryGoods&page=1" align="left">後臺頁面</a>&nbsp;
 					&nbsp; <a href="LoginAction.do?action=logout" align="left">登出</a> <br />
 					<br /> <font face="微軟正黑體" size="4"> <b>投入:</b> <input
 						type="number" name="inputMoney" max="100000" min="0" size="5"
@@ -91,6 +95,9 @@
 									<p style="color: red;">(庫存 ${good.goodsQuantity} 件)</p>
 							</font>
 						</c:forEach>
+						<c:if test="${goodsList.size()==0}">
+							<c:out value="查無相關商品"/>
+						</c:if>
 						</td>
 						</tr>
 					</table></td>
@@ -99,25 +106,22 @@
 
 	</table>
 			<c:set var="totalRecords" value="${goodsList.size()}" /> <!-- 總記錄數 -->
-			<c:set var="totalPages" value="${totalRecords % pageSize ==0 ? totalRecords/pageSize: (totalRecords/pageSize) }" /> <!-- 總頁數 -->
-			<!-- 去掉頁碼小數點(因為fmt捨去小數點後會將整數進或退到最接近的偶數) -->
-			<c:choose>
-				<c:when test="${totalPages % 2 > 1}">
-				    <fmt:formatNumber value="${totalPages}" pattern="###" var="roundedTotalPages" />
-				    <c:set var="totalPagesInt" value="${roundedTotalPages}" />
-				</c:when>
-				<c:otherwise>
-				    <fmt:formatNumber value="${totalPages}" pattern="###" var="roundedTotalPages" />
-				    <c:set var="totalPagesInt" value="${roundedTotalPages + 1}" />
-				</c:otherwise>
-			</c:choose>
+			<c:set var="totalPages" value="${totalRecords % pageSize ==0 ? totalRecords/pageSize: (totalRecords/pageSize)+0.5}" /> <!-- 總頁數 -->
+			
+			<fmt:formatNumber value="${totalPages}" pattern="###" var="roundedTotalPages" />
+ 			<c:set var="totalPagesInt" value="${roundedTotalPages}" />
 			<c:set var="startPage" value="${currentPage - 2 > 0 ? currentPage - 1 : 1}" /> <!-- 分頁連結開始的頁碼 -->
 			<c:set var="endPage" value="${startPage + 2 > totalPagesInt ? totalPagesInt : startPage + 2}" /> <!-- 分頁連結結束的頁碼 -->
 
 		<c:if test="${endPage >= startPage}">
 			<div class="pagination">
 			    <c:if test="${currentPage > 1}">
-			        <a href="FrontendAction.do?action=searchGoods&pageNo=${currentPage - 1}" style="font-size: 24px;">&lt; 上一頁</a>
+			    	<c:url value="/FrontendAction.do" var="prevPage">
+			    		<c:param name="action" value="searchGoods" />
+    					<c:param name="pageNo" value="${currentPage - 1}" />
+    					<c:param name="searchKeyword" value="${searchKeyword}" />
+			    	</c:url>
+			        <a href="${prevPage}" style="font-size: 24px;">&lt; 上一頁</a>
 			    </c:if>
 			    
 			    <c:forEach begin="${startPage}" end="${endPage}" var="page">
@@ -126,13 +130,23 @@
 			                <span style="font-size: 24px;"><strong>&nbsp;${page}&nbsp;</strong></span>
 			            </c:when>
 			            <c:otherwise>
-			                <a href="FrontendAction.do?action=searchGoods&pageNo=${page}" style="font-size: 24px;">&nbsp;${page}&nbsp;</a>
+			            	<c:url value="/FrontendAction.do" var="shownPage">
+			    				<c:param name="action" value="searchGoods" />
+    							<c:param name="pageNo" value="${page}" />
+    							<c:param name="searchKeyword" value="${searchKeyword}" />
+			    			</c:url>
+			                <a href="${shownPage}" style="font-size: 24px;">&nbsp;${page}&nbsp;</a>
 			            </c:otherwise>
 			        </c:choose>
 			    </c:forEach>
 			    
 			    <c:if test="${currentPage < totalPagesInt}">
-			        <a href="FrontendAction.do?action=searchGoods&pageNo=${currentPage + 1}" style="font-size: 24px;">下一頁 &gt;</a>
+			    	<c:url value="/FrontendAction.do" var="nextPage">
+			    		<c:param name="action" value="searchGoods" />
+    					<c:param name="pageNo" value="${currentPage + 1}" />
+    					<c:param name="searchKeyword" value="${searchKeyword}" />
+			    	</c:url>
+			        <a href="${nextPage}" style="font-size: 24px;">下一頁 &gt;</a>
 			    </c:if>
 			</div>
 		</c:if>
